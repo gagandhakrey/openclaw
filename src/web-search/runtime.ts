@@ -198,13 +198,13 @@ export function resolveWebSearchDefinition(
     runtimeWebSearch?.selectedProvider ??
     runtimeWebSearch?.providerConfigured ??
     resolveWebSearchProviderId({ config: options?.config, search, providers });
-  const provider =
-    providers.find((entry) => entry.id === providerId) ??
-    providers.find(
-      (entry) =>
-        entry.id === resolveWebSearchProviderId({ config: options?.config, search, providers }),
-    ) ??
-    providers[0];
+
+  let provider = providers.find((entry) => entry.id === providerId);
+  if (!provider) {
+    const fallbackId = resolveWebSearchProviderId({ config: options?.config, search, providers });
+    provider = providers.find((entry) => entry.id === fallbackId) ?? providers[0];
+  }
+
   if (!provider) {
     return null;
   }
